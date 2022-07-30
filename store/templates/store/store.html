@@ -101,7 +101,14 @@
 <!-- ========================= SECTION PAGETOP ========================= -->
 <section class="section-pagetop bg">
 <div class="container">
-	<h2 class="title-page">Our Store</h2>
+    
+    {% if "search" in request.path %}
+        <h2 class="title-page">Results</h2>
+        {% else %}
+    <h2 class="title-page">Our Store</h2>
+    {% endif %}
+        
+	
 	
 </div> <!-- container //  -->
 </section>
@@ -222,6 +229,11 @@
 </header><!-- sect-heading -->
 
 <div class="row">
+    
+    {% if not products %}
+        <h4 class="text-center"> No Results found in the store</h4>
+   {% else %}
+        
 	{% for product in products %}
     
     <div class="col-md-4">
@@ -274,7 +286,7 @@
 </nav>
 
 	</main> <!-- col.// -->
-
+ {% endif %}
 </div>
 
 </div> <!-- container .//  -->
