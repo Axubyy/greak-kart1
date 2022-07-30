@@ -1,8 +1,5 @@
-from gc import get_objects
-from itertools import product
-from unicodedata import category
-from webbrowser import get
-import django
+from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import TemplateView
 from django.views import View
@@ -27,16 +24,24 @@ class StoreListView(ListView):
             categories = get_object_or_404(
                 Category, slug=self.kwargs["category_slug"])
             products = Product.objects.filter(
-                category=categories, is_available=True)
+                category=categories, is_available=True).order_by('id')
+            paginator = Paginator(products, 3)
+            page = self.request.GET.get('page')
+            paged_product = paginator.get_page(page)
             product_count = products.count()
-            context["products"] = products
+            context["products"] = paged_product
             context["product_count"] = product_count
             # cat_products = Category.objects.get(slug=category_slug).products.all()
         else:
-            products = Product.objects.all()
-            product_count = products.count()
 
-        context["products"] = products
+            products = Product.objects.all().order_by('id')
+            paginator = Paginator(products, 3)
+            # url that comes with page number ?page=
+            page = self.request.GET.get('page')
+            paged_product = paginator.get_page(page)
+            product_count = products.count()
+        #  context["products"] = products
+        context["products"] = paged_product
         context["product_count"] = product_count
 
         return context
@@ -75,8 +80,8 @@ class ProductDetailView(DetailView):
         product = Product.objects.get(
             category__slug=self.kwargs["category_slug"], slug=self.kwargs["product_slug"])
 
-        is_in_cart = CartItem.objects.get(
-            cart__cart_id=_get_cart_id(self.request), product=product).exists()
+        # is_in_cart = CartItem.objects.get(
+        #     cart__cart_id=_get_cart_id(self.request), product=product).exists()
 
         return product
 
@@ -87,3 +92,7 @@ class ProductDetailView(DetailView):
     #     context["product"] = product
 
     #     return context
+
+
+def search(request):
+    return HttpResponse('search')

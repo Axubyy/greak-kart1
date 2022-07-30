@@ -2,6 +2,7 @@ from math import prod
 from django.http import HttpResponse, HttpResponseRedirect
 from django.shortcuts import get_object_or_404, redirect, render
 from django.views import View
+from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic import ListView, DetailView, CreateView
 from django.views.generic.base import TemplateView
 from cart.models import Cart, CartItem
@@ -44,18 +45,21 @@ class CartView(TemplateView):
         total = 0
         quantity = 0
         context = super().get_context_data(**kwargs)
-        cart = Cart.objects.get(cart_id=_get_cart_id(self.request))
-        cart_items = CartItem.objects.filter(cart=cart)
-        for cart_item in cart_items:
-            quantity += cart_item.quantity
-            total += (cart_item.product.price * cart_item.quantity)
-        tax = int(0.02 * total)
-        grand_total = total + tax
-        context["quantity"] = quantity
-        context["total"] = total
-        context["cart_items"] = cart_items
-        context["tax"] = tax
-        context["grand_total"] = grand_total
+        try:
+            cart = Cart.objects.get(cart_id=_get_cart_id(self.request))
+            cart_items = CartItem.objects.filter(cart=cart)
+            for cart_item in cart_items:
+                quantity += cart_item.quantity
+                total += (cart_item.product.price * cart_item.quantity)
+            tax = int(0.02 * total)
+            grand_total = total + tax
+            context["quantity"] = quantity
+            context["total"] = total
+            context["cart_items"] = cart_items
+            context["tax"] = tax
+            context["grand_total"] = grand_total
+        except ObjectDoesNotExist:
+            pass
 
         return context
 
