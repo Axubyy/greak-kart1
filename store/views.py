@@ -1,3 +1,4 @@
+from gc import get_objects
 from itertools import product
 from unicodedata import category
 from webbrowser import get
@@ -6,9 +7,11 @@ from django.shortcuts import get_object_or_404, render
 from django.views.generic.base import TemplateView
 from django.views import View
 from django.views.generic import DetailView, ListView, UpdateView, CreateView
+from cart.models import CartItem
 from category.models import Category
 
 from store.models import Product
+from cart.views import _get_cart_id
 
 # Create your views here.
 
@@ -71,6 +74,9 @@ class ProductDetailView(DetailView):
     def get_object(self):
         product = Product.objects.get(
             category__slug=self.kwargs["category_slug"], slug=self.kwargs["product_slug"])
+
+        is_in_cart = CartItem.objects.get(
+            cart__cart_id=_get_cart_id(self.request), product=product).exists()
 
         return product
 

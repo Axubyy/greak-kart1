@@ -62,7 +62,6 @@ class CartView(TemplateView):
 
 def add_to_cart(request, product_id):  # private
     product = Product.objects.get(id=product_id)
-    print("I got here")
     try:
         cart = Cart.objects.get(cart_id=_get_cart_id(request))
     except Cart.DoesNotExist:
