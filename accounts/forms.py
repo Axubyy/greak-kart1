@@ -1,3 +1,4 @@
+from dataclasses import fields
 from django import forms
 from django.contrib.auth import get_user_model
 
@@ -44,7 +45,13 @@ class RegistrationForm(forms.ModelForm):
 
 
 class LoginForm(forms.ModelForm):
-    pass
+    password = forms.CharField(widget=forms.PasswordInput(attrs={
+        "placeholder": "Enter Your Password"
+    }))
+
+    class Meta:
+        model = Account
+        fields = ["email", "password"]
 
 
 class LogoutForm(forms.ModelForm):
