@@ -43,15 +43,11 @@ class RegistrationForm(forms.ModelForm):
             raise forms.ValidationError(" Password doesn't match!")
 
 
-class LoginForm(forms.ModelForm):
-    password = forms.CharField(widget=forms.PasswordInput(attrs={
-        "placeholder": "Enter Your Password"
-    }))
+# class LoginForm(forms.ModelForm):
+#     password = forms.CharField(widget=forms.PasswordInput(attrs={
+#         "placeholder": "Enter Your Password"
+#     }))
 
-    class Meta:
-        model = Account
-        fields = ["email", "password"]
-
-
-class LogoutForm(forms.ModelForm):
-    pass
+#     class Meta:
+#         model = Account
+#         fields = ["email", "password"]
