@@ -80,7 +80,7 @@
 						<div class="widget-header">
 						<small class="title text-muted">Welcome {{ user.first_name}}</small>
 						<div> 
-							<a href="#" class="" >Dashboard</a> <span class="dark-transp"> | </span>
+							<a href="{% url 'dashboard' %}" class="" >Dashboard</a> <span class="dark-transp"> | </span>
 							<a href="{% url 'logout' %}" class="" > Logout</a>
 						</div>
 					</div>
