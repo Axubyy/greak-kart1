@@ -1,4 +1,5 @@
-from django.shortcuts import redirect, render
+from cProfile import Profile
+from django.shortcuts import get_object_or_404, redirect, render
 from django.contrib import messages, auth
 from django.contrib.auth.decorators import login_required
 
@@ -11,8 +12,8 @@ from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import EmailMessage
 
 
-from .forms import RegistrationForm
-from .models import Account
+from .forms import RegistrationForm, UserForm, UserProfileForm
+from .models import Account, UserProfile
 
 # Create your views here.
 
@@ -180,7 +181,32 @@ def reset_password(request):
                     request,  "Password Reset Successful,Please login with your new password")
                 return redirect('login')
         else:
-            messages.error(request, "Passwords doesn't match")
+            messages.error(
+                request, "Passwords doesn't match. Please Input again")
             return redirect('reset-password')
     else:
         return render(request, "accounts/reset_password.html")
+
+
+def edit_profile(request):
+    user_profile = get_object_or_404(UserProfile, user=request.user)
+    if request.method == "POST":
+        user_form = UserForm(request.POST, instance=request.user)
+        profile_form = UserProfileForm(
+            request.POST, request.FILES, instance=user_profile)
+
+        if user_form.is_valid() and profile_form.is_valid():
+            user_form.save()
+            profile_form.save()
+            messages.success(request, "Your Update was saved successfully")
+            return redirect('edit-profile')
+
+    else:
+        user_form = UserForm(instance=request.user)
+        profile_form = UserProfileForm(instance=user_profile)
+    context = {
+        "user_form": user_form,
+        "profile_form": profile_form
+    }
+
+    return render(request, "accounts/edit_profile.html", context)

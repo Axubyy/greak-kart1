@@ -1,0 +1,17 @@
+{% extends 'category/base.html' %}
+
+{% load static %}
+
+
+{% block content %}
+
+<form action="{ }" method="post" class="form-group">
+
+           {{ user_form.as_p }}
+           {{ user_form.first_name}}
+           {{profile_form.as_p}}
+         <button type="submit">Update Profile</button>
+  
+</form>
+
+{% endblock content %}

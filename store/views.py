@@ -81,7 +81,7 @@ def product_detail(request, category_slug, product_slug):
         is_in_cart = CartItem.objects.filter(
             cart__cart_id=_get_cart_id(request), product=product).exists()
     except Exception as e:
-        raise e
+        pass
 
     context = {
         "product": product,
@@ -96,23 +96,23 @@ class ProductDetailView(DetailView):
     model = Product
     context_object_name = "product"
 
-    # def get_object(self):
-    #     product = Product.objects.get(
-    #         category__slug=self.kwargs["category_slug"], slug=self.kwargs["product_slug"])
+    def get_object(self):
+        product = Product.objects.get(
+            category__slug=self.kwargs["category_slug"], slug=self.kwargs["product_slug"])
 
     # is_in_cart = CartItem.objects.get(
     #     cart__cart_id=_get_cart_id(self.request), product=product).exists()
 
-    # return product
+        return product
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        product = Product.objects.get(
-            category__slug=self.object.get("category_slug"), slug=self.object.get("product_slug"))
-        is_in_cart = CartItem.objects.get(
-            cart__cart_id=_get_cart_id(self.request), product=product).exists()
-        context["product"] = product
-        context["is_in_cart"] = is_in_cart
+        # product = Product.objects.get(
+        #     category__slug=self.object.get("category_slug"), slug=self.object.get("product_slug"))
+        # is_in_cart = CartItem.objects.get(
+        #     cart__cart_id=_get_cart_id(self.request), product=product).exists()
+        context["is_in_cart"] = CartItem.objects.filter(
+            cart__cart_id=_get_cart_id(self.request), product=context.get(self.context_object_name)).exists()
 
         return context
 

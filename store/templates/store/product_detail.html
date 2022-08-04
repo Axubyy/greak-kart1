@@ -38,7 +38,7 @@
 					<div class="btn-group btn-group-sm btn-group-toggle" data-toggle="buttons">
 						<select name="color"  id="inputState" class="form-control"  required>
 							<option value="" disabled selected> Select</option>
-							{% for i in product.variation_set.colors %}
+								{% for i in product.variation_set.colors %}
 							<option value="{{ i.variation_value|lower}}"> {{ i.variation_value|capfirst}} </option>
 							{% endfor %}
 						</select>
